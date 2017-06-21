@@ -5,14 +5,14 @@
 # TO_RUN:         docker run -d -p 80:80 --name wiki amcorreia/docker-dokuwiki
 
 # Base docker image
-FROM alpine:3.6
+FROM alpine
 MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
 
 # Set the version you want of Wiki
 ENV DOKUWIKI_VERSION=stable DOKUWIKI_CSUM=ea11e4046319710a2bc6fdf58b5cda86
 
 # Update & install packages & cleanup afterwards
-RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xml tar tzdata && \
+RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xml tar && \
     wget --no-check-certificate -q -O /dokuwiki.tgz "https://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" && \
     if [ "$DOKUWIKI_CSUM" != "$(md5sum /dokuwiki.tgz | awk '{print($1)}')" ];then echo "Wrong md5sum of downloaded file!"; exit 1; fi && \
     mkdir /dokuwiki && \
@@ -22,7 +22,8 @@ RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xm
     mkdir /var/run/lighttpd && \
     chown lighttpd:lighttpd /var/run/lighttpd && \
     echo 'include "dokuwiki.conf"' >> /etc/lighttpd/lighttpd.conf && \
-    apk del tar wget
+    apk del tar wget && \
+    rm /var/cache/apk/*
 
 # Configure lighttpd
 ADD dokuwiki.conf /etc/lighttpd/dokuwiki.conf
