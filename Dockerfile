@@ -1,16 +1,15 @@
 # Ripped from: https://bitbucket.org/mprasil/docker_dokuwiki/src/96330e626964?at=master
 #
 # DESCRIPTION:    Image with DokuWiki & lighttpd
-# TO_BUILD:       docker build -t amcorreia/dokuwiki .
-# TO_RUN:         docker run -d -p 80:80 --name wiki amcorreia/dokuwiki
+# TO_BUILD:       docker build -t amcorreia/docker-dokuwiki .
+# TO_RUN:         docker run -d -p 80:80 --name wiki amcorreia/docker-dokuwiki
 
 # Base docker image
-FROM alpine
+FROM alpine:3.6
 MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
 
 # Set the version you want of Wiki
-ENV DOKUWIKI_VERSION stable
-ENV DOKUWIKI_CSUM ea11e4046319710a2bc6fdf58b5cda86
+ENV DOKUWIKI_VERSION=stable DOKUWIKI_CSUM=ea11e4046319710a2bc6fdf58b5cda86
 
 # Update & install packages & cleanup afterwards
 #RUN adduser -D lighttpd lighttpd
@@ -23,13 +22,15 @@ RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xm
     chown -R lighttpd:lighttpd /dokuwiki && \
     mkdir /var/run/lighttpd && \
     chown lighttpd:lighttpd /var/run/lighttpd && \
-    echo 'include "dokuwiki.conf"' >> /etc/lighttpd/lighttpd.conf 
+    echo 'include "dokuwiki.conf"' >> /etc/lighttpd/lighttpd.conf && \
+    apk del tar
+
 
 # Configure lighttpd
 ADD dokuwiki.conf /etc/lighttpd/dokuwiki.conf
 
 EXPOSE 80
 
-VOLUME ["/dokuwiki/data/","/dokuwiki/lib/plugins/","/dokuwiki/conf/","/dokuwiki/lib/tpl/","/var/log/"]
+VOLUME ["/dokuwiki/data/", "/dokuwiki/lib/plugins/", "/dokuwiki/conf/", "/dokuwiki/lib/tpl/"]
 
 ENTRYPOINT ["/usr/sbin/lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
