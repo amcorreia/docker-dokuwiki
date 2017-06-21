@@ -12,7 +12,6 @@ MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
 ENV DOKUWIKI_VERSION=stable DOKUWIKI_CSUM=ea11e4046319710a2bc6fdf58b5cda86
 
 # Update & install packages & cleanup afterwards
-#RUN adduser -D lighttpd lighttpd
 RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xml tar tzdata && \
     wget --no-check-certificate -q -O /dokuwiki.tgz "https://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" && \
     if [ "$DOKUWIKI_CSUM" != "$(md5sum /dokuwiki.tgz | awk '{print($1)}')" ];then echo "Wrong md5sum of downloaded file!"; exit 1; fi && \
@@ -23,8 +22,7 @@ RUN set -x && apk add --update --no-cache wget lighttpd php5-cgi php5-gd php5-xm
     mkdir /var/run/lighttpd && \
     chown lighttpd:lighttpd /var/run/lighttpd && \
     echo 'include "dokuwiki.conf"' >> /etc/lighttpd/lighttpd.conf && \
-    apk del tar
-
+    apk del tar wget
 
 # Configure lighttpd
 ADD dokuwiki.conf /etc/lighttpd/dokuwiki.conf
