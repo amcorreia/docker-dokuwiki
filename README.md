@@ -1,14 +1,13 @@
 #amcorreia/dokuwiki
 ==================
 
-[![Docker Stars](https://img.shields.io/docker/stars/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/)
-[![Docker Build](https://img.shields.io/docker/automated/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/)
-[![Layers](https://images.microbadger.com/badges/image/amcorreia/docker-dokuwiki.svg)](https://microbadger.com/images/amcorreia/docker-dokuwiki)
-[![Version](https://images.microbadger.com/badges/version/amcorreia/docker-dokuwiki.svg)](https://microbadger.com/images/amcorreia/docker-dokuwiki)
+[![Docker Stars](https://img.shields.io/docker/stars/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/) [![Docker Pulls](https://img.shields.io/docker/pulls/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/) [![Docker Build](https://img.shields.io/docker/automated/amcorreia/docker-dokuwiki.svg)](https://hub.docker.com/r/amcorreia/docker-dokuwiki/) [![Layers](https://images.microbadger.com/badges/image/amcorreia/docker-dokuwiki.svg)](https://microbadger.com/images/amcorreia/docker-dokuwiki) [![Version](https://images.microbadger.com/badges/version/amcorreia/docker-dokuwiki.svg)](https://microbadger.com/images/amcorreia/docker-dokuwiki)
 
 
-Lightweight Docker container image with [DokuWiki](https://www.dokuwiki.org/dokuwiki) and lighttpd based on Alpine Linux.
+# DO NOT USE in production, it's using PHP7 built-in web server
+
+
+Lightweight Docker container image with [DokuWiki](https://www.dokuwiki.org/dokuwiki) and php7 based on Alpine Linux.
 
 ### How to run
 
@@ -18,7 +17,7 @@ Assume your docker host is localhost and HTTP public port is 80 (change these va
 Just run:
 
 ```sh
-$ docker run -d -p 80:80 --name wiki amcorreia/dokuwiki
+$ docker run -d -p 80:80 --name wiki amcorreia/docker-dokuwiki
 ```
 
 ### Data persistency
@@ -44,22 +43,31 @@ $ docker volume create dokuwiki-tpl
 Run container with all volumes set up
 
 ```
-$ docker run --rm -it -p 80:80 --volume dokuwiki-data:/dokuwiki/data --volume dokuwiki-plugins:/dokuwiki/lib/plugins --volume dokuwiki-conf:/dokuwiki/conf --volume dokuwiki-tpl:/dokuwiki/lib/tpl --name wiki  amcorreia/dokuwiki
+$ docker run --rm -it -p 80:80 --volume dokuwiki-data:/dokuwiki/data --volume dokuwiki-plugins:/dokuwiki/lib/plugins --volume dokuwiki-conf:/dokuwiki/conf --volume dokuwiki-tpl:/dokuwiki/lib/tpl --name wiki  amcorreia/docker-dokuwiki
 ```
 
 or you can use
 ```
-$ docker run  -it -p 80:80 --volume dokuwiki-data:/dokuwiki/data --volume dokuwiki-plugins:/dokuwiki/lib/plugins --volume dokuwiki-conf:/dokuwiki/conf --volume dokuwiki-tpl:/dokuwiki/lib/tpl --name wiki  amcorreia/dokuwiki
+$ docker run  -it -p 80:80 --volume dokuwiki-data:/dokuwiki/data --volume dokuwiki-plugins:/dokuwiki/lib/plugins --volume dokuwiki-conf:/dokuwiki/conf --volume dokuwiki-tpl:/dokuwiki/lib/tpl --name wiki  amcorreia/docker-dokuwiki
 ```
 and next time just run
 ```
 $ docker start wiki
 ```
 
+If you're having trouble with timezone, set environment variable to fix
+
+```
+    -e TZ=America/Sao_Paulo
+
+```
+
 ### Backup
 
 I like the idea of using volume because this makes more easy to know which volume belongs to wich container, and
 this way I can mount this volume local, and read file normally. To do this.
+
+Or you can use this plugin (Advanced Plugin) https://www.dokuwiki.org/plugin:advanced
 
 ## Requirements
 
